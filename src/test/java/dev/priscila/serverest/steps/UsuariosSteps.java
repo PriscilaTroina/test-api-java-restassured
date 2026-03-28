@@ -1,0 +1,163 @@
+package dev.priscila.serverest.steps;
+
+import dev.priscila.serverest.service.usuarios.UsuarioService;
+import dev.priscila.serverest.service.login.LoginService;
+import dev.priscila.serverest.model.ModelUser;
+import dev.priscila.serverest.model.ModelLogin;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.pt.E;
+import io.cucumber.java.pt.Dado;
+import io.cucumber.java.pt.Quando;
+import io.cucumber.java.pt.Entao;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.hamcrest.*;
+import org.junit.jupiter.api.Assertions;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.greaterThan;
+
+
+public class UsuariosSteps {
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final LoginService loginService = new LoginService();
+    private Response response;
+    private ModelUser userRequest;
+    private ModelLogin loginRequest;
+    private String token;
+
+
+    // =========================
+    // SETUP / CONTEXTO
+    // =========================
+    @Dado("que a API esteja disponivel")
+    public void apiDisponivel() {
+        // healthcheck futuro, se precisar
+    }
+
+    @Dado("que exista um usuario cadastrado")
+    public void createUserPreCondition() {
+        String dynamicEmail = "priscila_" + System.currentTimeMillis() + "@gmail.com";
+
+        userRequest = new ModelUser();
+        userRequest.setNome("Priscila");
+        userRequest.setEmail(dynamicEmail);
+        userRequest.setPassword("teste123");
+        userRequest.setAdministrador("true");
+
+       usuarioService.createUser(userRequest);
+    }
+
+    // =========================
+    // AÇÕES - GET USUÁRIOS
+    // ========================
+
+    //Cenario 1:
+    @Quando("eu fizer uma requisicao GET no endpoint de usuarios")
+    public void getUsers() {
+       response = usuarioService.getAllUsers();
+    }
+
+
+    // =========================
+    // AÇÕES - POST USUÁRIO
+    // =========================
+
+    //Cenario 2:
+    @Quando("eu preencher as informacoes de cadastro com os dados:")
+    public void preencherDadosDeCadastro(DataTable dataTable) {
+        String dynamicEmail = "priscila_" + System.currentTimeMillis() + "@gmail.com";
+
+        Map<String, String> data = dataTable.asMaps().get(0);
+
+        userRequest = new ModelUser();
+        userRequest.setNome(data.get("nome"));
+        userRequest.setEmail(dynamicEmail);
+        userRequest.setPassword(data.get("password"));
+        userRequest.setAdministrador(data.get("administrador"));
+
+    }
+
+    @E("enviar a requisicao POST")
+    public void requestCreateUser() {
+        response = usuarioService.createUser(userRequest);
+    }
+
+    @Quando("eu fizer uma requisicao POST com dados validos")
+    public void requestLogin() {
+        loginRequest = new ModelLogin();
+
+        loginRequest.setEmail(userRequest.getEmail());
+        loginRequest.setPassword(userRequest.getPassword());
+
+        response = loginService.login(loginRequest);
+
+        token = response.then().extract().path("authorization");
+    }
+
+
+
+    // =========================
+    // VALIDAÇÕES GENÉRICAS
+    // =========================
+
+    @Entao("o status code deve ser {int}")
+    public void validateStatusCode(int statusCodeEsperado) {
+        Assertions.assertEquals(statusCodeEsperado, response.getStatusCode());
+    }
+
+
+    // =========================
+    // VALIDAÇÕES - LISTAGEM DE USUÁRIOS
+    // =========================
+
+    //Cenario 1:
+    @E("a quantidade de usuarios deve ser maior que zero")
+    public void validateUserListHasUsers() {
+        response.then()
+                .body("quantidade", greaterThan(0));
+    }
+
+
+    @E("cada usuario deve conter os campos obrigatorios")
+    public void validateUserFields() {
+        response.then()
+                .body("usuarios[0].nome", notNullValue())
+                .body("usuarios[0].email", notNullValue())
+                .body("usuarios[0].password", notNullValue())
+                .body("usuarios[0].administrador", notNullValue())
+                .body("usuarios[0]._id", notNullValue());
+    }
+
+
+    // =========================
+    // VALIDAÇÕES - CADASTRO DE USUÁRIO
+    // =========================
+
+    //Cenario 2:
+    @E("a resposta deve conter a mensagem {string}")
+    public void validateSuccessMessage(String mensagemEsperada) {
+        response.then().body("message", equalTo(mensagemEsperada));
+    }
+
+    @E("a resposta deve conter um id de usuario valido")
+    public void validateUserId() {
+        response.then().body("_id", notNullValue());
+        response.then().body("_id", Matchers.not(emptyString()));
+    }
+
+    // =========================
+    // VALIDAÇÕES - LOGIN
+    // =========================
+
+    @E("deve ser retornado um token valido")
+    public void getTokenValido() {
+        response.then().body("authorization", notNullValue());
+        response.then().body("authorization", not(emptyString()));
+    }
+
+}
