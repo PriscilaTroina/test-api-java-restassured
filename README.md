@@ -14,7 +14,7 @@ simulando um cenário real de projeto em evolução e boas práticas de automaç
 - Login com validação e extração de token
 
 ## Estrutura e conceitos aplicados
-- BDD com Cucumber (cenários independentes)
+- Gherkin com Cucumber (cenários independentes)
 - Separação de pré-condições e comportamento testado
 - Uso de estado compartilhado entre steps
 - Services responsáveis apenas por comunicação com a API
