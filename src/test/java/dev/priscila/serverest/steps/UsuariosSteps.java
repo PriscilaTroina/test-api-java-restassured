@@ -24,9 +24,8 @@ import static org.hamcrest.Matchers.greaterThan;
 
 public class UsuariosSteps {
     private final UsuarioService usuarioService = new UsuarioService();
-    private final LoginService loginService = new LoginService();
     private Response response;
-    private ModelUser userRequest;
+    protected static ModelUser userRequest;
     private ModelLogin loginRequest;
     private String token;
 
@@ -49,25 +48,22 @@ public class UsuariosSteps {
         userRequest.setPassword("teste123");
         userRequest.setAdministrador("true");
 
-       usuarioService.createUser(userRequest);
+        usuarioService.createUser(userRequest);
     }
 
     // =========================
     // AÇÕES - GET USUÁRIOS
     // ========================
 
-    //Cenario 1:
     @Quando("eu fizer uma requisicao GET no endpoint de usuarios")
     public void getUsers() {
        response = usuarioService.getAllUsers();
     }
 
-
     // =========================
     // AÇÕES - POST USUÁRIO
     // =========================
 
-    //Cenario 2:
     @Quando("eu preencher as informacoes de cadastro com os dados:")
     public void preencherDadosDeCadastro(DataTable dataTable) {
         String dynamicEmail = "priscila_" + System.currentTimeMillis() + "@gmail.com";
@@ -79,7 +75,6 @@ public class UsuariosSteps {
         userRequest.setEmail(dynamicEmail);
         userRequest.setPassword(data.get("password"));
         userRequest.setAdministrador(data.get("administrador"));
-
     }
 
     @E("enviar a requisicao POST")
@@ -87,22 +82,9 @@ public class UsuariosSteps {
         response = usuarioService.createUser(userRequest);
     }
 
-    @Quando("eu fizer uma requisicao POST com dados validos")
-    public void requestLogin() {
-        loginRequest = new ModelLogin();
-
-        loginRequest.setEmail(userRequest.getEmail());
-        loginRequest.setPassword(userRequest.getPassword());
-
-        response = loginService.login(loginRequest);
-
-        token = response.then().extract().path("authorization");
-    }
-
-
 
     // =========================
-    // VALIDAÇÕES GENÉRICAS
+    // VALIDAÇÕES GENÉRICAS DE CADASTRO DE USUARIO
     // =========================
 
     @Entao("o status code deve ser {int}")
@@ -110,12 +92,10 @@ public class UsuariosSteps {
         Assertions.assertEquals(statusCodeEsperado, response.getStatusCode());
     }
 
-
     // =========================
     // VALIDAÇÕES - LISTAGEM DE USUÁRIOS
     // =========================
 
-    //Cenario 1:
     @E("a quantidade de usuarios deve ser maior que zero")
     public void validateUserListHasUsers() {
         response.then()
@@ -138,7 +118,6 @@ public class UsuariosSteps {
     // VALIDAÇÕES - CADASTRO DE USUÁRIO
     // =========================
 
-    //Cenario 2:
     @E("a resposta deve conter a mensagem {string}")
     public void validateSuccessMessage(String mensagemEsperada) {
         response.then().body("message", equalTo(mensagemEsperada));
@@ -150,14 +129,6 @@ public class UsuariosSteps {
         response.then().body("_id", Matchers.not(emptyString()));
     }
 
-    // =========================
-    // VALIDAÇÕES - LOGIN
-    // =========================
 
-    @E("deve ser retornado um token valido")
-    public void getTokenValido() {
-        response.then().body("authorization", notNullValue());
-        response.then().body("authorization", not(emptyString()));
-    }
 
 }

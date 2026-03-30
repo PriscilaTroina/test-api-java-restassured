@@ -21,13 +21,6 @@ Funcionalidade: Gerenciar endpoints de usuarios
     E a resposta deve conter um id de usuario valido
 
 
-  Cenario: Login com sucesso
-
-    Dado que exista um usuario cadastrado
-    Quando eu fizer uma requisicao POST com dados validos
-    Entao o status code deve ser 200
-    E deve ser retornado um token valido
-
 
 
 
