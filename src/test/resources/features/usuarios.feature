@@ -20,6 +20,12 @@ Funcionalidade: Gerenciar endpoints de usuarios
     E a resposta deve conter a mensagem "Cadastro realizado com sucesso"
     E a resposta deve conter um id de usuario valido
 
+  Cenario: Buscar usuario por ID
+    Dado que exista um usuario cadastrado
+    Quando eu buscar o usuario pelo ID
+    Entao o status code deve ser 200
+    E os dados do usuario devem ser retornados corretamente
+
 
 
 
