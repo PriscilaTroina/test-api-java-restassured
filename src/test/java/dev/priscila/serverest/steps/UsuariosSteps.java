@@ -1,7 +1,6 @@
 package dev.priscila.serverest.steps;
 
 import dev.priscila.serverest.service.usuarios.UsuarioService;
-import dev.priscila.serverest.service.login.LoginService;
 import dev.priscila.serverest.model.ModelUser;
 import dev.priscila.serverest.model.ModelLogin;
 import io.cucumber.datatable.DataTable;
@@ -9,12 +8,9 @@ import io.cucumber.java.pt.E;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Quando;
 import io.cucumber.java.pt.Entao;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.hamcrest.*;
 import org.junit.jupiter.api.Assertions;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -28,6 +24,7 @@ public class UsuariosSteps {
     protected static ModelUser userRequest;
     private ModelLogin loginRequest;
     private String token;
+    private String userID;
 
 
     // =========================
@@ -48,7 +45,10 @@ public class UsuariosSteps {
         userRequest.setPassword("teste123");
         userRequest.setAdministrador("true");
 
-        usuarioService.createUser(userRequest);
+        response = usuarioService.createUser(userRequest);
+
+        userID = response.then().extract().path("_id");
+
     }
 
     // =========================
@@ -58,6 +58,11 @@ public class UsuariosSteps {
     @Quando("eu fizer uma requisicao GET no endpoint de usuarios")
     public void getUsers() {
        response = usuarioService.getAllUsers();
+    }
+
+    @Quando("eu buscar o usuario pelo ID")
+    public void getUserByID() {
+        response = usuarioService.getUserByID(userID);
     }
 
     // =========================
@@ -129,6 +134,18 @@ public class UsuariosSteps {
         response.then().body("_id", Matchers.not(emptyString()));
     }
 
+    // =========================
+    // VALIDAÇÕES - BUSCA USUARIO POR ID
+    // =========================
 
+    @E("os dados do usuario devem ser retornados corretamente")
+    public void validateUserDetails() {
+        response.then()
+                .body("nome", equalTo(userRequest.getNome()))
+                .body("email", equalTo(userRequest.getEmail()))
+                .body("password", equalTo(userRequest.getPassword()))
+                .body("administrador", equalTo(userRequest.getAdministrador()))
+                .body("_id", Matchers.equalTo(userID));
 
+    }
 }

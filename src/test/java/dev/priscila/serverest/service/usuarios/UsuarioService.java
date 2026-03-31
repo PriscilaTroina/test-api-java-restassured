@@ -29,4 +29,16 @@ public class UsuarioService extends BaseTest {
                 .extract().response();
 
     }
+
+    public Response getUserByID(String userID) {
+        return io.restassured.RestAssured
+                .given()
+                .relaxedHTTPSValidation()
+                .spec(requestSpec)
+                .when()
+                .get("/usuarios/" + userID)
+                .then()
+                .log().all()
+                .extract().response();
+    }
 }
