@@ -7,7 +7,7 @@ simulando um cenário real de projeto em evolução e boas práticas de automaç
 ## Funcionalidades implementadas
 - Estrutura de automação baseada em Service Layer
 - Organização dos steps por responsabilidade e domínio
-- Automação dos endpoints de usuários (GET, POST e busca por ID)
+- Automação dos endpoints de usuários (GET, POST, busca por ID e DELETE)
 - Validação de status code, contratos de resposta e identificação de recursos
 - Uso de DataTable e Models para construção de requisições
 - Geração de dados dinâmicos (email) para evitar conflitos de execução
@@ -18,6 +18,16 @@ simulando um cenário real de projeto em evolução e boas práticas de automaç
 - Separação de pré-condições e comportamento testado
 - Uso de estado compartilhado entre steps
 - Services responsáveis apenas por comunicação com a API
+
+## Escopo dos testes
+
+Os cenários implementados neste projeto têm foco principal em fluxos positivos, com o objetivo de exercitar o uso do **RestAssured**, a estruturação
+de testes **BDD**, o reaproveitamento de estado entre steps e a organização de uma
+automação de API.
+
+Cenários alternativos e negativos (como validações de erro, dados duplicados ou regras
+de negócio específicas) são reconhecidos como importantes, porém não fazem parte do
+escopo atual do projeto, que possui caráter técnico e educacional.
 
 ## Próximos passos
 - Endpoints com autorização (uso de token)
