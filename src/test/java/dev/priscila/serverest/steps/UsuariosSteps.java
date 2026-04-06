@@ -87,6 +87,15 @@ public class UsuariosSteps {
         response = usuarioService.createUser(userRequest);
     }
 
+    // =========================
+    // AÇÕES - DELETE USUÁRIO
+    // =========================
+
+    @Quando("eu remover o usuario pelo ID")
+    public void deleteUserByID() {
+        response = usuarioService.deleteUserByID(userID);
+
+    }
 
     // =========================
     // VALIDAÇÕES GENÉRICAS DE CADASTRO DE USUARIO
@@ -123,11 +132,6 @@ public class UsuariosSteps {
     // VALIDAÇÕES - CADASTRO DE USUÁRIO
     // =========================
 
-    @E("a resposta deve conter a mensagem {string}")
-    public void validateSuccessMessage(String mensagemEsperada) {
-        response.then().body("message", equalTo(mensagemEsperada));
-    }
-
     @E("a resposta deve conter um id de usuario valido")
     public void validateUserId() {
         response.then().body("_id", notNullValue());
@@ -147,5 +151,13 @@ public class UsuariosSteps {
                 .body("administrador", equalTo(userRequest.getAdministrador()))
                 .body("_id", Matchers.equalTo(userID));
 
+    }
+
+    // =========================
+    // VALIDAÇAO GENERICA- MENSAGEM DE SUCESSOend
+    // =========================
+    @E("a resposta deve conter a mensagem {string}")
+    public void validateSuccessMessage(String mensagemEsperada) {
+        response.then().body("message", equalTo(mensagemEsperada));
     }
 }

@@ -41,4 +41,16 @@ public class UsuarioService extends BaseTest {
                 .log().all()
                 .extract().response();
     }
+
+    public Response deleteUserByID(String userID) {
+        return io.restassured.RestAssured
+                .given()
+                .relaxedHTTPSValidation()
+                .spec(requestSpec)
+                .when()
+                .delete("/usuarios/" + userID)
+                .then()
+                .log().all()
+                .extract().response();
+    }
 }
