@@ -27,6 +27,13 @@ Funcionalidade: Gerenciar endpoints de usuarios
     E os dados do usuario devem ser retornados corretamente
 
 
+  Cenario: Deletar usuario
+    Dado que exista um usuario cadastrado
+    Quando eu remover o usuario pelo ID
+    Entao o status code deve ser 200
+    E a resposta deve conter a mensagem "Registro excluído com sucesso"
+
+
 
 
 

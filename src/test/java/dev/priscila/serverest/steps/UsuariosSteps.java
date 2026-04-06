@@ -87,6 +87,15 @@ public class UsuariosSteps {
         response = usuarioService.createUser(userRequest);
     }
 
+    // =========================
+    // AÇÕES - DELETE USUÁRIO
+    // =========================
+
+    @Quando("eu remover o usuario pelo ID")
+    public void deleteUserByID() {
+        response = usuarioService.deleteUserByID(userID);
+
+    }
 
     // =========================
     // VALIDAÇÕES GENÉRICAS DE CADASTRO DE USUARIO
