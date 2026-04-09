@@ -7,7 +7,7 @@ import io.restassured.specification.RequestSpecification;
 public abstract class BaseTest {
 
     protected RequestSpecification requestSpec = new RequestSpecBuilder()
-            .setBaseUri("https://serverest.dev")  // <-- CORRETO
+            .setBaseUri("https://serverest.dev")   // <-- CORRETO
             .setRelaxedHTTPSValidation()
             .setContentType(ContentType.JSON)
             .build();

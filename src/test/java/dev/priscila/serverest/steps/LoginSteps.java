@@ -17,31 +17,54 @@ public class LoginSteps {
     private final LoginService loginService = new LoginService();
     private Response response;
     private ModelLogin loginRequest;
-    private String token;
+    protected static String token;
 
 
+
+    // =========================
+    // LOGIN COMO AÇÃO (cenário de login)
+    // ========================
 
     @Quando("eu fizer uma requisicao POST com dados validos")
     public void requestLogin() {
-        loginRequest = new ModelLogin();
-
-        loginRequest.setEmail(UsuariosSteps.userRequest.getEmail());
-        loginRequest.setPassword(UsuariosSteps.userRequest.getPassword());
-
-        response = loginService.login(loginRequest);
-
-        token = response.then().extract().path("authorization");
+        authenticateUser();
     }
 
+
+    // =========================
+    // VALIDAÇÕES LOGIN
+    // =========================
     @Entao("o status code retornado deve ser {int}")
     public void validateStatusCode(int statusCodeEsperado) {
         Assertions.assertEquals(statusCodeEsperado, response.getStatusCode());
     }
 
     @E("deve ser retornado um token valido")
-    public void getTokenValido() {
+    public void validateToken() {
         response.then().body("authorization", notNullValue());
         response.then().body("authorization", not(emptyString()));
+    }
+
+
+    // =========================
+    // LOGIN COMO PRÉ-CONDIÇÃO (outros cenários)
+    // =========================
+
+    @E("que eu esteja autenticado")
+    public void userIsAuthenticated() {
+        authenticateUser();
+    }
+
+    private void authenticateUser() {
+        loginRequest = new ModelLogin();
+
+    // Reutiliza os dados do usuário criado no cenário de cadastro
+        loginRequest.setEmail(UsuariosSteps.userRequest.getEmail());
+        loginRequest.setPassword(UsuariosSteps.userRequest.getPassword());
+
+        response = loginService.login(loginRequest);
+
+        token = response.then().extract().path("authorization");
     }
 
 }
