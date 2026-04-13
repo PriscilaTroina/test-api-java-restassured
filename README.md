@@ -4,14 +4,27 @@
 Projeto criado para estudo e consolidação de automação de APIs REST,
 simulando um cenário real de projeto em evolução e boas práticas de automação backend.
 
+## API utilizada
+
+Este projeto utiliza a **API pública ServeRest**, amplamente usada para fins educacionais,
+como base para a automação dos cenários de teste.
+
+A API foi escolhida por disponibilizar endpoints de usuários, login e produtos, permitindo
+a prática de automação de fluxos autenticados e não autenticados sem dependência de
+infraestrutura local.
+
+Documentação da API: https://serverest.dev/
+
 ## Funcionalidades implementadas
 - Estrutura de automação baseada em Service Layer
 - Organização dos steps por responsabilidade e domínio
 - Automação dos endpoints de usuários (GET, POST, busca por ID e DELETE)
+- Automação do endpoint de login com validação e extração de token, organizada em feature e steps próprios
+- Automação do endpoint de cadastro de produtos passando token de autenticação
 - Validação de status code, contratos de resposta e identificação de recursos
 - Uso de DataTable e Models para construção de requisições
-- Geração de dados dinâmicos (email) para evitar conflitos de execução
-- Automação de login com validação e extração de token, organizada em feature e steps próprios
+- Geração de dados dinâmicos (email e nome do produto) para evitar conflitos de execução
+
 
 ## Estrutura e conceitos aplicados
 - Gherkin com Cucumber (cenários independentes)
@@ -30,8 +43,7 @@ de negócio específicas) são reconhecidos como importantes, porém não fazem 
 escopo atual do projeto, que possui caráter técnico e educacional.
 
 ## Próximos passos
-- Endpoints com autorização (uso de token)
-- Cadastro de produtos
+- Implementação de novos cenários de Produtos
 - Evoluções e ajustes arquiteturais conforme crescimento do projeto
 
 
@@ -42,4 +54,17 @@ escopo atual do projeto, que possui caráter técnico e educacional.
 - **Cucumber** – escrita de cenários em Gherkin
 - **JUnit** – execução dos testes
 - **Maven** – gerenciamento de dependências e build
+
+## ▶️ Como executar o projeto
+
+### 🔧 Pré‑requisitos
+- Java JDK 11 ou superior
+- Maven
+- Acesso à internet (API externa)
+
+### ▶️ Executando via Maven
+Na raiz do projeto, execute:
+
+```bash
+mvn test
 
